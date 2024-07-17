@@ -1,4 +1,4 @@
-﻿using BepInEx;
+using BepInEx;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,7 +10,6 @@ public class TimeAndWeatherMod : BaseUnityPlugin
 
     private void Update()
     {
-        // Показывать/скрывать UI по нажатию Tab
         if (Keyboard.current.tabKey.isPressed)
         {
             if (!keyPressed)
@@ -29,44 +28,41 @@ public class TimeAndWeatherMod : BaseUnityPlugin
     {
         if (uiOpen)
         {
-            // Кнопки времени
             float buttonWidth = 180f;
             float buttonHeight = 30f;
             float buttonSpacing = 40f;
             float buttonX = 30f;
             float buttonY = Screen.height - 210f;
 
-            if (GUI.Button(new Rect(buttonX, buttonY, buttonWidth, buttonHeight), "Ночь"))
+            if (GUI.Button(new Rect(buttonX, buttonY, buttonWidth, buttonHeight), "Night"))
             {
                 SetNightTime();
             }
-            if (GUI.Button(new Rect(buttonX, buttonY + buttonSpacing, buttonWidth, buttonHeight), "Вечер"))
+            if (GUI.Button(new Rect(buttonX, buttonY + buttonSpacing, buttonWidth, buttonHeight), "Evening"))
             {
                 SetEveningTime();
             }
-            if (GUI.Button(new Rect(buttonX, buttonY + 2 * buttonSpacing, buttonWidth, buttonHeight), "Утро"))
+            if (GUI.Button(new Rect(buttonX, buttonY + 2 * buttonSpacing, buttonWidth, buttonHeight), "Morning"))
             {
                 SetMorningTime();
             }
-            if (GUI.Button(new Rect(buttonX, buttonY + 3 * buttonSpacing, buttonWidth, buttonHeight), "День"))
+            if (GUI.Button(new Rect(buttonX, buttonY + 3 * buttonSpacing, buttonWidth, buttonHeight), "Day"))
             {
                 SetDayTime();
             }
 
-            // Кнопки погоды
-            float weatherButtonX = Screen.width - buttonWidth - 30f; // Позиция X для кнопок погоды
-            if (GUI.Button(new Rect(weatherButtonX, buttonY, buttonWidth, buttonHeight), "Дождь"))
+            float weatherButtonX = Screen.width - buttonWidth - 30f;
+            if (GUI.Button(new Rect(weatherButtonX, buttonY, buttonWidth, buttonHeight), "Rain"))
             {
                 SetRain();
             }
-            if (GUI.Button(new Rect(weatherButtonX, buttonY + buttonSpacing, buttonWidth, buttonHeight), "Ясная"))
+            if (GUI.Button(new Rect(weatherButtonX, buttonY + buttonSpacing, buttonWidth, buttonHeight), "Clear"))
             {
                 SetNoRain();
             }
         }
     }
 
-    // Функции смены времени
     public static void SetNightTime()
     {
         BetterDayNightManager.instance.SetTimeOfDay(0);
@@ -87,7 +83,6 @@ public class TimeAndWeatherMod : BaseUnityPlugin
         BetterDayNightManager.instance.SetTimeOfDay(3);
     }
 
-    // Функции смены погоды
     public static void SetRain()
     {
         for (int i = 1; i < BetterDayNightManager.instance.weatherCycle.Length; i++)
