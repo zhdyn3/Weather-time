@@ -8,13 +8,13 @@ namespace GorillaTagModTemplateProject
 {
     [ModdedGamemode]
     [BepInDependency("org.legoandmars.gorillatag.utilla", "1.5.0")]
-    [BepInPlugin("com.Zhdyn3.gorillatag.weathertime", "Weather Time", "1.0.0")] // Используйте явно указанный GUID, имя и версию
+    [BepInPlugin("com.Zhdyn3.gorillatag.weathertime", "Weather Time", "1.0.0")]
     public class Plugin : BaseUnityPlugin
     {
-        bool inRoom;
-
+        private bool inRoom;
         private bool uiOpen = false;
         private bool keyPressed = false;
+        private GameObject newOutsideObject;
 
         void Start()
         {
@@ -23,19 +23,25 @@ namespace GorillaTagModTemplateProject
 
         void OnEnable()
         {
-            // Если вы не используете Harmony, удалите следующие строки
-            // HarmonyPatches.ApplyHarmonyPatches();
+            HarmonyPatches.ApplyHarmonyPatches();
         }
 
         void OnDisable()
         {
-            // Если вы не используете Harmony, удалите следующие строки
-            // HarmonyPatches.RemoveHarmonyPatches();
+            HarmonyPatches.RemoveHarmonyPatches();
         }
 
         void OnGameInitialized(object sender, EventArgs e)
         {
-            // Инициализация после загрузки игры
+            if (inRoom)
+            {
+                // Поиск объекта "NewOutside" в сцене
+                newOutsideObject = GameObject.Find("Environment Objects/LocalObjects_Prefab/City/CosmeticsRoomAnchor/NewOutside");
+                if (newOutsideObject == null)
+                {
+                    Logger.LogError("Не удалось найти объект 'NewOutside'. Проверьте путь.");
+                }
+            }
         }
 
         void Update()
@@ -96,36 +102,44 @@ namespace GorillaTagModTemplateProject
             }
         }
 
-        public static void SetNightTime()
+        public void SetNightTime()
         {
             BetterDayNightManager.instance.SetTimeOfDay(0);
         }
 
-        public static void SetEveningTime()
+        public void SetEveningTime()
         {
             BetterDayNightManager.instance.SetTimeOfDay(7);
         }
 
-        public static void SetMorningTime()
+        public void SetMorningTime()
         {
             BetterDayNightManager.instance.SetTimeOfDay(1);
         }
 
-        public static void SetDayTime()
+        public void SetDayTime()
         {
             BetterDayNightManager.instance.SetTimeOfDay(3);
         }
 
-        public static void SetRain()
+        public void SetRain()
         {
+            if (newOutsideObject != null)
+            {
+                newOutsideObject.SetActive(true); // Показываем объект
+            }
             for (int i = 1; i < BetterDayNightManager.instance.weatherCycle.Length; i++)
             {
                 BetterDayNightManager.instance.weatherCycle[i] = BetterDayNightManager.WeatherType.Raining;
             }
         }
 
-        public static void SetNoRain()
+        public void SetNoRain()
         {
+            if (newOutsideObject != null)
+            {
+                newOutsideObject.SetActive(false); // Скрываем объект
+            }
             for (int i = 1; i < BetterDayNightManager.instance.weatherCycle.Length; i++)
             {
                 BetterDayNightManager.instance.weatherCycle[i] = BetterDayNightManager.WeatherType.None;
@@ -136,13 +150,14 @@ namespace GorillaTagModTemplateProject
         public void OnJoin(string gamemode)
         {
             inRoom = true;
+            uiOpen = false;
         }
 
         [ModdedGamemodeLeave]
         public void OnLeave(string gamemode)
         {
             inRoom = false;
+            uiOpen = false;
         }
     }
 }
-
