@@ -7,6 +7,6 @@
     {
         public const string GUID = "com.Zhdyn3.gorillatag.weathertime";
         public const string Name = "Weather time";
-        public const string Version = "1.0.0";
+        public const string Version = "1.0.1";
     }
 }
